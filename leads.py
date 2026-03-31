@@ -55,6 +55,65 @@ def score_lead(title, snippet):
     except Exception as e:
         print(f"Error scoring lead: {e}")
         return "N/A"
+def generate_html_dashboard(df):
+    """Converts the leads DataFrame into a searchable HTML dashboard."""
+    
+    # Create the rows for the table
+    table_rows = ""
+    for _, row in df.iterrows():
+        # Color coding the 'Need' badge
+        badge_class = "bg-danger" if row['Need'] >= 4 else "bg-warning text-dark" if row['Need'] == 3 else "bg-secondary"
+        
+        table_rows += f"""
+        <tr>
+            <td><strong>{row['Name']}</strong></td>
+            <td>{row['LinkedIn Job Title']}</td>
+            <td><span class="badge {badge_class}">{row['Need']}/5</span></td>
+            <td><a href="{row['URL']}" target="_blank" class="btn btn-sm btn-primary">View Profile</a></td>
+        </tr>
+        """
+
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>AUV Customer Discovery Dashboard</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            body {{ background-color: #f8f9fa; padding: 40px; }}
+            .container {{ background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }}
+            .table {{ margin-top: 20px; }}
+            .header-div {{ border-bottom: 2px solid #0d6efd; margin-bottom: 20px; padding-bottom: 10px; }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header-div">
+                <h1>🌊 Subsea Discovery Dashboard</h1>
+                <p class="text-muted">Targeting: {INDUSTRIES} in {REGIONS}</p>
+            </div>
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Name</th>
+                        <th>Job Title</th>
+                        <th>Priority Score</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {table_rows}
+                </tbody>
+            </table>
+        </div>
+    </body>
+    </html>
+    """
+    
+    with open("dashboard.html", "w", encoding="utf-8") as f:
+        f.write(html_content)
 
 def main():
     print("🚀 Starting LinkedIn-Only Discovery Agent...")
@@ -101,7 +160,10 @@ def main():
         df = df.sort_values(by="Need", ascending=False)
         
     df.to_csv("leads.csv", index=False)
-    print(f"✅ Done! {len(leads_list)} verified LinkedIn leads saved to leads.csv")
+    
+    # GENERATE HTML DASHBOARD
+    generate_html_dashboard(df)
+    print("✅ Dashboard generated: dashboard.html")
 
 if __name__ == "__main__":
     main()
