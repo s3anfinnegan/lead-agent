@@ -55,7 +55,7 @@ The extracted snippets are passed to a larger model (**Llama 3.1 70B**) for qual
 ---
 
 ## 📊 Data Output
-The agent generates a `leads_list.csv` with the following columns:
+The agent generates a `leads.csv` with the following columns:
 
 | Column | Description |
 | :--- | :--- |
