@@ -21,7 +21,7 @@ The agent executes the generated queries and performs a strict validation check.
 ### 3. Intelligence & Scoring (Llama 3.3 70B)
 Extracted snippets are analyzed by **Llama 3.3 70B** for qualitative fit.
 * **Custom Scoring Logic:** Using `prompts/score-leads.md`, the agent assigns a 1-5 "Need Score" based on the lead's seniority and relevance to the project description.
-* **Prioritization:** The final output is automatically sorted, placing the highest-value prospects at the top of the file.
+* **Prioritization:** The final output is automatically sorted, placing the highest-value prospects at the top.
 
 ---
 
@@ -29,8 +29,8 @@ Extracted snippets are analyzed by **Llama 3.3 70B** for qualitative fit.
 
 ### Prerequisites
 * **Python 3.10+**
-* **Groq API Key** (Using Llama 3.1 8B and Llama 3.3 70B)
-* **Tavily API Key** (For search capabilities)
+* **Groq API Key** (Llama 3.1 8B & Llama 3.3 70B)
+* **Tavily API Key** (Search capabilities)
 
 ### Installation
 1.  **Clone and Enter Directory:**
@@ -56,20 +56,29 @@ Extracted snippets are analyzed by **Llama 3.3 70B** for qualitative fit.
 
 ---
 
-## 📂 Project Structure
-* `leads.py`: The core logic for searching, filtering, and scoring.
-* `prompts/generate-leads.md`: Template for search query generation.
-* `prompts/score-leads.md`: Template for AI lead evaluation.
-* `.env`: Storage for API keys.
+## 🖥️ Viewing Your Leads (Dashboard)
+This agent automatically generates an **HTML Dashboard** so you can view and action leads without needing external spreadsheet software.
+
+1.  Run the agent: `python leads.py`
+2.  Open **`dashboard.html`** in any web browser.
+3.  **Actionable Interface:** High-priority leads (4-5/5) are color-coded for quick identification. Click "View Profile" to go directly to their LinkedIn page.
 
 ---
 
-## 📊 Data Output
-The agent generates a `leads.csv` with the following columns:
+## 📂 Project Structure
+* `leads.py`: Core logic for searching, filtering, and HTML generation.
+* `prompts/generate-leads.md`: Template for search query generation.
+* `prompts/score-leads.md`: Template for AI lead evaluation.
+* `.env`: Storage for API credentials.
+* `leads.csv`: Raw data output (backup).
+* `dashboard.html`: The interactive lead-management interface.
 
+---
+
+## 📊 Data Output Columns
 | Column | Description |
 | :--- | :--- |
-| **Industry** | The target sector defined in the config. |
+| **Industry** | The target sector defined in your config. |
 | **Name** | Extracted name from the LinkedIn profile. |
 | **LinkedIn Job Title** | The full professional headline. |
 | **Need (1-5)** | AI-calculated priority score based on project fit. |
@@ -77,4 +86,4 @@ The agent generates a `leads.csv` with the following columns:
 
 ---
 
-> **Note:** This tool is designed for landing customer discovery calls, not for spamming. 
+> **Note:** This tool is designed for customer discovery, not for spamming.
