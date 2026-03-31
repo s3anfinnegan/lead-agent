@@ -57,27 +57,51 @@ def score_lead(title, snippet):
         return "N/A"
 
 def main():
-    print("🚀 Starting Modular Discovery Agent...")
+    print("🚀 Starting LinkedIn-Only Discovery Agent...")
     queries = generate_search_queries()
     leads_list = []
+    target_count = 10  # We only want the top 10 verified LinkedIn leads
 
     for query in queries:
+        if len(leads_list) >= target_count:
+            break
+            
         print(f"Searching: {query}")
-        search_results = tavily.search(query=query, search_depth="advanced", max_results=10)
+        # We search for more than 10 to ensure we have enough to filter
+        search_results = tavily.search(query=query, search_depth="advanced", max_results=20)
         
         for res in search_results['results']:
-            need_score = score_lead(res['title'], res['content'])
-            leads_list.append({
-                "Industry": INDUSTRIES,
-                "Name": res['title'].split('|')[0].strip(),
-                "LinkedIn Job Title": res['title'],
-                "Need": need_score,
-                "URL": res['url']
-            })
+            url = res['url']
+            
+            # STRICT FILTER: Only proceed if it is a LinkedIn Personal Profile
+            if "linkedin.com/in/" in url:
+                print(f"Found Verified Lead: {res['title']}")
+                
+                need_score = score_lead(res['title'], res['content'])
+                
+                leads_list.append({
+                    "Industry": INDUSTRIES,
+                    "Name": res['title'].split('|')[0].strip(),
+                    "LinkedIn Job Title": res['title'],
+                    "Need": need_score,
+                    "URL": url
+                })
+                
+                # Check if we hit our 10-lead goal
+                if len(leads_list) >= target_count:
+                    break
+            else:
+                # Skip company pages, news articles, etc.
+                continue
 
+    # Create the DataFrame and sort by 'Need' so the best leads are at the top
     df = pd.DataFrame(leads_list)
+    if not df.empty:
+        df['Need'] = pd.to_numeric(df['Need'], errors='coerce')
+        df = df.sort_values(by="Need", ascending=False)
+        
     df.to_csv("leads.csv", index=False)
-    print("✅ Done! Results saved to leads.csv")
+    print(f"✅ Done! {len(leads_list)} verified LinkedIn leads saved to leads.csv")
 
 if __name__ == "__main__":
     main()
