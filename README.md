@@ -55,20 +55,9 @@ Extracted snippets are analyzed by Llama 3.3 70B for qualitative fit.
     ```
 
 ---
+## Project Structure
 
-## Configuration
-The agent is entirely driven by config.json. Edit this file to pivot your search criteria without touching the code.
-
-```json
-{
-    "target_roles": "",
-    "industries": "",
-    "regions": "UK, USA, and Ireland",
-    "project_desc": "I am building a...",
-    "target_count": 10
-}
-
-## Folder Structure
+```text
 lead-agent/
 ├── prompts/
 │   ├── generate-leads.md   # Template for search query generation
@@ -80,3 +69,4 @@ lead-agent/
 ├── leads.csv               # Raw data output (backup)
 ├── leads.py                # Core logic for searching, filtering, and scoring
 └── README.md               # Project documentation
+
